@@ -89,7 +89,7 @@ Process finished with exit code 0
 class Forge:
     def __init__(self, api_key=None):
         # You can get an API key for free at 1forge.com
-        if api_key is None:
+        if not api_key:
             self.api_key = Config().SECRET_KEY or 'YOUR_API_KEY'
         else:
             self.api_key = api_key
@@ -126,6 +126,7 @@ class Forge:
 
 if __name__ == '__main__':
     forge = Forge()
+    # forge = Forge('YOUR_API_KEY')
     # print("api_key: {}".format(forge.api_key))
     # sys.exit()
 
