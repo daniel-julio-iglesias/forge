@@ -1,3 +1,4 @@
+==================================================================
 Python API script
 
 Exercise task:
@@ -37,6 +38,9 @@ Running above command would result in sending request to the following
 endpoint https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD with pairs=EURUSD as query argument
 and saving output data to output.csv file.
 
+
+==================================================================
+
 https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPJPY,AUDUSD&api_key=YOUR_API_KEY
 
 
@@ -58,3 +62,25 @@ bid	0.72244
 ask	0.72246
 price	0.72245
 timestamp	1538427461
+
+
+==================================================================
+
+Saving utf-8 texts in json.dumps as UTF8, not as \u escape sequence
+https://stackoverflow.com/questions/18337407/saving-utf-8-texts-in-json-dumps-as-utf8-not-as-u-escape-sequence
+
+
+
+==================================================================
+
+
+
+
+
+
+==================================================================
+
+
+
+
+==================================================================

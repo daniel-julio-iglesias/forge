@@ -3,6 +3,7 @@
 from __future__ import print_function
 import python_forex_quotes
 from config import Config
+import codecs, json, io
 import sys
 
 """"Python API script: forge
@@ -113,15 +114,35 @@ class Forge:
         quotes = self.client.getQuotes(specified_symbols)
         return quotes
 
-    # Check your usage / quota limit
     def quota(self):
+        """Check your usage / quota limit
+        """
         quota = self.client.quota()
         return quota
 
-    # Convert from one currency to another
     def convert(self, from_currency, to_currency, from_currency_value):
+        """"Convert from one currency to another
+        """
         conversion = self.client.convert(from_currency, to_currency, from_currency_value)
         return conversion
+
+    def create_file(self, path='', filename="output.csv", output_string=''):
+        """Create an output file
+        """
+
+        # json.loads(r.data.decode('utf-8'))
+        print(json.loads(str(output_string).decode("utf-8")))
+
+        # f = codecs.open(path + filename, 'w', 'utf8')
+
+        # f.write(output_string)
+        # f.close()
+
+
+        # json_string = json.dumps(output_string, ensure_ascii=False).encode('utf8')
+
+        # with io.open(path + filename, 'w', encoding='utf8') as json_file:
+        #    json.dump(u"ברי צקלה", json_file, ensure_ascii=False)
 
 
 if __name__ == '__main__':
@@ -138,11 +159,19 @@ if __name__ == '__main__':
     print(forge.get_symbols())
 
     specified_symbols = ['EURUSD', 'GBPJPY']
-    print(forge.get_quotes(specified_symbols))
+    quotes = forge.get_quotes(specified_symbols)
+    print(quotes)
 
-    print(forge.quota())
+    output_string = quotes
+    forge.create_file(output_string=output_string)
+
+    quota = forge.quota()
+    print(quota)
 
     from_currency = 'EUR'
     to_currency = 'USD'
     from_currency_value = 100
-    print(forge.convert(from_currency, to_currency, from_currency_value))
+    conversion = forge.convert(from_currency, to_currency, from_currency_value)
+    print(conversion)
+
+
