@@ -1,3 +1,16 @@
+# myforge
+
+This is my personal working repository.
+For original repository see at 
+
+https://1forge.com/forex-data-api/api-documentation
+
+and 
+
+https://github.com/1Forge/python-forex-quotes
+
+
+
 # python_forex_quotes
 
 python_forex_quotes is a Python Library for fetching realtime forex quotes
@@ -75,11 +88,15 @@ client = python_forex_quotes.ForexDataClient('YOUR_API_KEY')
 print client.quota()
 ```
 
-## Contributing
-Thank you for considering contributing! Any issues, bug fixes, suggestions, improvements or help in any other way is always appreciated.  Please feel free to open an issue or create a pull request.
 
 ## Support and Contact
-Please contact me at contact@1forge.com if you have any questions or requests.
+This is a copy of the original python_forex_quotes
+
+For any contact, please nevigate to the original 
+python_forex_quotes repository version - 
+
+https://github.com/1Forge/python-forex-quotes
+
 
 ## License and Terms
 This library is provided without warranty under the MIT license.

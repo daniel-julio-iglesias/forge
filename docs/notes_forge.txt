@@ -1,0 +1,45 @@
+Python API script
+
+Exercise task:
+
+Pick an API from https://github.com/toddmotto/public-apis/blob/master/README.md that:
+requires authentication (apiKey or OAuth)
+responds with JSON or XML
+supports GET or POST request type.
+    (i.e.: forge FOREX API https://1forge.com/forex-data-api/api-documentation - qoutes endpoint)
+
+
+
+Create python script that retrieves data from one of API endpoints. The script should be called
+ like:
+ $ python script_name.py arg1 arg2 kwarg1=value1
+ (arguments are just an example).
+
+
+Script requirements:
+Python 2.7
+allows user to write results to specific file .csv
+provides support for arguments and keyworded arguments
+
+
+Other instruction:
+Object-oriented approach will be appreciated
+Error checks will be appreciated (incorrect arguments provided, invalid output file format,
+error response from server, incorrect response etc.)
+Basically show whatever you want
+
+
+
+
+Example:
+
+Script would be called like:
+
+$ python forge_api_script.py output.csv pairs=EURUSD --debug , where:
+
+output.csv - output filename
+pairs=EURUSD – currency pair to be returned by API
+--debug turns debug mode of the script i.e.: more detailed log messages
+Running above command would result in sending request to the following
+endpoint https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD with pairs=EURUSD as query argument
+and saving output data to output.csv file.
