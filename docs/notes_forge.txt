@@ -36,3 +36,25 @@ pairs=EURUSD – currency pair to be returned by API
 Running above command would result in sending request to the following
 endpoint https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD with pairs=EURUSD as query argument
 and saving output data to output.csv file.
+
+https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPJPY,AUDUSD&api_key=YOUR_API_KEY
+
+
+0
+symbol	"EURUSD"
+bid	1.15782
+ask	1.15784
+price	1.15783
+timestamp	1538427461
+1
+symbol	"GBPJPY"
+bid	148.631
+ask	148.639
+price	148.635
+timestamp	1538427461
+2
+symbol	"AUDUSD"
+bid	0.72244
+ask	0.72246
+price	0.72245
+timestamp	1538427461
