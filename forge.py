@@ -3,6 +3,7 @@
 from __future__ import print_function
 import python_forex_quotes
 from config import Config
+import sys
 
 """"Python API script: forge
 
@@ -66,6 +67,26 @@ WebSocket Support: None
 Delivery formats: JSON
 Redundancy: Basic
 Encryption: 256-bit
+
+$python forge.py
+api_key: YOUR_API_KEY
+
+Market is open!
+
+[u'EURHKD', u'EURCNH', u'EURDKK', u'EURMXN', u'EURPLN', u'EURXAG', u'EURXAU', 
+u'EURBTC', u'EURETH', u'EURLTC', u'EURXRP', u'EURDSH', u'EURBCH', u'USDEUR', 
+u'USDGBP', u'USDAUD', u'USDNZD', u'USDXAG', u'USDXAU', u'USDBTC', u'USDETH', 
+u'USDLTC', u'USDXRP', u'USDDSH', u'USDBCH', u'JPYEUR', u'JPYUSD', u'JPYGBP', 
+..., u'BCHBTC']
+
+[{u'ask': 1.15791, u'timestamp': 1538427545, u'symbol': u'EURUSD', u'price': 1.15786, u'bid': 1.15781}, 
+{u'ask': 148.657, u'timestamp': 1538427545, u'symbol': u'GBPJPY', u'price': 148.6395, u'bid': 148.622}]
+
+{u'hours_until_reset': 8, u'quota_used': 4, u'quota_remaining': 996, u'quota_limit': 1000}
+
+{u'text': u'100 EUR is worth 115.786 USD', u'value': 115.786, u'timestamp': 1538427545}
+
+Process finished with exit code 0
 """
 
 
@@ -73,7 +94,7 @@ class Forge:
     def __init__(self, api_key=None):
         # You can get an API key for free at 1forge.com
         if api_key is None:
-            self.api_key = Config.SECRET_KEY or 'YOUR_API_KEY'
+            self.api_key = Config().SECRET_KEY or 'YOUR_API_KEY'
         else:
             self.api_key = api_key
         # Instantiate the client
@@ -109,6 +130,8 @@ class Forge:
 
 if __name__ == '__main__':
     forge = Forge()
+    print("api_key: {}".format(forge.api_key))
+    # sys.exit()
 
     if forge.market_is_open():
         print("Market is open!")
