@@ -8,28 +8,21 @@ responds with JSON or XML
 supports GET or POST request type.
     (i.e.: forge FOREX API https://1forge.com/forex-data-api/api-documentation - qoutes endpoint)
 
-
-
 Create python script that retrieves data from one of API endpoints. The script should be called
  like:
  $ python script_name.py arg1 arg2 kwarg1=value1
  (arguments are just an example).
-
 
 Script requirements:
 Python 2.7
 allows user to write results to specific file .csv
 provides support for arguments and keyworded arguments
 
-
 Other instruction:
 Object-oriented approach will be appreciated
 Error checks will be appreciated (incorrect arguments provided, invalid output file format,
 error response from server, incorrect response etc.)
 Basically show whatever you want
-
-
-
 
 Example:
 
