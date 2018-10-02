@@ -73,6 +73,38 @@ https://stackoverflow.com/questions/18337407/saving-utf-8-texts-in-json-dumps-as
 
 ==================================================================
 
+C:\Users\PycharmProjects\forge\venv\Scripts\python.exe C:/Users/PycharmProjects/forge/forge.py
+Market is open!
+
+No handlers could be found for logger "decorator.logged"
+
+["EURHKD", "EURCNH", "EURDKK", "EURMXN", "EURPLN", "EURXAG", "EURXAU", "EURBTC", "EURETH", "EURLTC", "EURXRP",
+"EURDSH", "EURBCH", "USDEUR", "USDGBP", "USDAUD", "USDNZD", "USDXAG", "USDXAU", "USDBTC", "USDETH", "USDLTC",
+ (...)
+"ETHUSD", "LTCBTC", "LTCUSD", "XRPUSD", "XRPBTC", "DSHUSD", "DSHBTC", "BCHUSD", "BCHBTC"]
+
+[{"ask": 1.15478, "timestamp": 1538501516, "symbol": "EURUSD", "price": 1.15477, "bid": 1.15477},
+{"ask": 147.696, "timestamp": 1538501516, "symbol": "GBPJPY", "price": 147.694, "bid": 147.692}]
+
+{"hours_until_reset": 11, "quota_used": 4, "quota_remaining": 996, "quota_limit": 1000}
+
+{"text": "100 EUR is worth 115.477 USD", "value": 115.477, "timestamp": 1538501516}
+
+Process finished with exit code 0
+
+
+
+==================================================================
+
+[{"ask": 1.15478, "timestamp": 1538501516, "symbol": "EURUSD", "price": 1.15477, "bid": 1.15477},
+{"ask": 147.696, "timestamp": 1538501516, "symbol": "GBPJPY", "price": 147.694, "bid": 147.692}]
+
+
+==================================================================
+
+
+
+==================================================================
 
 
 
