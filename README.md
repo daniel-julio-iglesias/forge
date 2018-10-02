@@ -37,6 +37,8 @@ pip install python_forex_quotes
 ```
 ## Usage
 
+python forge_api_script.py output.csv pairs=EURUSD --debug
+
 ### Instantiate the client
 ```python
 import python_forex_quotes
