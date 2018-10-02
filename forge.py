@@ -4,6 +4,7 @@ from __future__ import print_function
 import python_forex_quotes
 from config import Config
 import codecs, json, io
+import functools
 import sys
 
 """"Python API script: forge
@@ -86,6 +87,16 @@ Market is open!
 Process finished with exit code 0
 """
 
+def json_output(decorated):
+    """Run the decorated function, serialize the result of that function
+    to JSON, and return the JSON string.
+    """
+    @functools.wraps(decorated)
+    def inner(*args, **kwargs):
+        result = decorated(*args, **kwargs)
+        return json.dumps(result)
+    return inner
+
 
 class Forge:
     def __init__(self, api_key=None):
@@ -104,22 +115,28 @@ class Forge:
         else:
             return False
 
-    # Get the list of available symbols
+    @json_output
     def get_symbols(self):
+        """Get the list of available symbols
+        """
         symbols = self.client.getSymbols()
         return symbols
 
-    # Get quotes for specified symbols
+    @json_output
     def get_quotes(self, specified_symbols):
+        """Get quotes for specified symbols
+        """
         quotes = self.client.getQuotes(specified_symbols)
         return quotes
 
+    @json_output
     def quota(self):
         """Check your usage / quota limit
         """
         quota = self.client.quota()
         return quota
 
+    @json_output
     def convert(self, from_currency, to_currency, from_currency_value):
         """"Convert from one currency to another
         """
