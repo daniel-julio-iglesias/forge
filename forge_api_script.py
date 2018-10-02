@@ -93,9 +93,11 @@ u'ETHUSD', u'LTCBTC', u'LTCUSD', u'XRPUSD', u'XRPBTC', u'DSHUSD', u'DSHBTC', u'B
 Process finished with exit code 0
 """
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(version='1.0')
 
 parser.add_argument('-o', metavar='out-file', type=argparse.FileType('wt'))
+parser.add_argument('--pairs', action="store", dest="pairs")
+
 
 try:
     results = parser.parse_args()
@@ -256,12 +258,18 @@ def print_help():
     print('arg ...: arguments passed to program in sys.argv[1:]')
     print('--debug : turns debug mode of the script')
 
+
 def main():
+    if results.pairs:
+        print(results.pairs)
+    else:
+        print("No results.pairs")
+
     sys.exit()
 
 
 if __name__ == '__main__':
-    # main()
+    main()
     forge = Forge()
     # forge = Forge('YOUR_API_KEY')
     # print("api_key: {}".format(forge.api_key))
