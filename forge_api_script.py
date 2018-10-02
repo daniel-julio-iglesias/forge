@@ -94,19 +94,23 @@ Process finished with exit code 0
 
 python forge_api_script.py output.csv pair=EURUSD --debug
 python forge_api_script.py -h
-python forge_api_script.py [-h] [-v] [-o out-file] [--pairs PAIRS]
-python forge_api_script.py --file output.csv --pair EURUSD --pair GBPJPY --pair AUDUSD
+pforge_api_script.py [-h] [-v] [--filename FILENAME] [--pair PAIRS]
+                           [--debug]
+python forge_api_script.py --filename output.csv --pair EURUSD --pair GBPJPY --pair AUDUSD --debug
 """
 
 parser = argparse.ArgumentParser(version='1.0')
 
-parser.add_argument('--filename', nargs='?',
+parser.add_argument('--filename',
                     help='Output filename')
 parser.add_argument('--pair', action="append", dest="pairs",
                     help='Add repeated values to a list. Currency pair to be returned by API, e.g. EURUSD')
+parser.add_argument('--debug', action='store_true', default=False, dest='debug_switch',
+                    help='Turns debug mode of the script')
 
 results = parser.parse_args()
 print(results)
+
 
 def logged(method):
     """Cause the decorated method to be run and its results logged, along
@@ -129,11 +133,12 @@ def logged(method):
         # logging.basicConfig(level=logging.INFO,
         #                        format='%(asctime)s %(levelname)8s %(message)s',
         #                        filename='forge.log', filemode='w')
-        logging.basicConfig(level=logging.DEBUG, filename='forge.log', filemode='w')
 
-        # logger = logging.getLogger().setLevel(logging.DEBUG)
-        logger = logging.getLogger()
-        logger.debug('Called method %s at %.02f; execution time %.02f '
+        if results.debug_switch:
+            logging.basicConfig(level=logging.DEBUG, filename='forge.log', filemode='w')
+            # logger = logging.getLogger().setLevel(logging.DEBUG)
+            logger = logging.getLogger()
+            logger.debug('Called method %s at %.02f; execution time %.02f '
                          'seconds; result %r.' %
                          (method.__name__, start, delta, return_value))
 
@@ -242,16 +247,6 @@ class Forge:
 
 
 def main():
-    if results.pairs:
-        print(results.pairs)
-    else:
-        print("No results.pairs")
-
-    sys.exit()
-
-
-if __name__ == '__main__':
-    main()
     forge = Forge()
     # forge = Forge('YOUR_API_KEY')
     # print("api_key: {}".format(forge.api_key))
@@ -264,12 +259,13 @@ if __name__ == '__main__':
 
     print(forge.get_symbols())
 
-    specified_symbols = ['EURUSD', 'GBPJPY']
-    quotes = forge.get_quotes(specified_symbols)
-    print(quotes)
-
-    # output_string = quotes
-    # forge.create_file(output_string=output_string)
+    if results.pairs:
+        # specified_symbols = ['EURUSD', 'GBPJPY']
+        specified_symbols = results.pairs
+        quotes = forge.get_quotes(specified_symbols)
+        # print(quotes)
+        output_string = quotes
+        forge.create_file(output_string=output_string)
 
     quota = forge.quota()
     print(quota)
@@ -281,3 +277,5 @@ if __name__ == '__main__':
     print(conversion)
 
 
+if __name__ == '__main__':
+    main()
