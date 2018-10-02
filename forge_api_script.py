@@ -91,12 +91,17 @@ u'ETHUSD', u'LTCBTC', u'LTCUSD', u'XRPUSD', u'XRPBTC', u'DSHUSD', u'DSHBTC', u'B
 {u'text': u'100 EUR is worth 115.786 USD', u'value': 115.786, u'timestamp': 1538427545}
 
 Process finished with exit code 0
+
+python forge_api_script.py output.csv pairs=EURUSD --debug
+python forge_api_script.py output.csv pairs=EURUSD --debug
 """
 
 parser = argparse.ArgumentParser(version='1.0')
 
-parser.add_argument('-o', metavar='out-file', type=argparse.FileType('wt'))
-parser.add_argument('--pairs', action="store", dest="pairs")
+parser.add_argument('-o', metavar='out-file', type=argparse.FileType('wt'),
+                    help='output filename')
+parser.add_argument('--pairs', action="store", dest="pairs",
+                    help='currency pair to be returned by API, e.g. EURUSD,GBPJPY,AUDUSD')
 
 
 try:
