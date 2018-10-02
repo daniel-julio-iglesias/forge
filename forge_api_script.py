@@ -92,25 +92,21 @@ u'ETHUSD', u'LTCBTC', u'LTCUSD', u'XRPUSD', u'XRPBTC', u'DSHUSD', u'DSHBTC', u'B
 
 Process finished with exit code 0
 
-python forge_api_script.py output.csv pairs=EURUSD --debug
-python forge_api_script.py output.csv pairs=EURUSD --debug
+python forge_api_script.py output.csv pair=EURUSD --debug
+python forge_api_script.py -h
+python forge_api_script.py [-h] [-v] [-o out-file] [--pairs PAIRS]
+python forge_api_script.py --file output.csv --pair EURUSD --pair GBPJPY --pair AUDUSD
 """
 
 parser = argparse.ArgumentParser(version='1.0')
 
-parser.add_argument('-o', metavar='out-file', type=argparse.FileType('wt'),
-                    help='output filename')
-parser.add_argument('--pairs', action="store", dest="pairs",
-                    help='currency pair to be returned by API, e.g. EURUSD,GBPJPY,AUDUSD')
+parser.add_argument('--filename', nargs='?',
+                    help='Output filename')
+parser.add_argument('--pair', action="append", dest="pairs",
+                    help='Add repeated values to a list. Currency pair to be returned by API, e.g. EURUSD')
 
-
-try:
-    results = parser.parse_args()
-    print(parser.parse_args())
-    print('Output file:', results.o)
-except IOError, msg:
-    parser.error(str(msg))
-
+results = parser.parse_args()
+print(results)
 
 def logged(method):
     """Cause the decorated method to be run and its results logged, along
@@ -234,34 +230,15 @@ class Forge:
         conversion = self.client.convert(from_currency, to_currency, from_currency_value)
         return conversion
 
-    # @logged
-    # def create_file(self, path='', filename="output.csv", output_string=''):
-    #     """Create an output file
-    #     """
-    #     with open(path + filename, 'w') as my_file:
-    #         my_file.write(output_string)
-
     @logged
-    def create_file(self, output_string=''):
+    def create_file(self, output_string=None):
         """Create an output file
         """
-        if not results.o:
-            print(output_string)
+        if results.filename:
+            with open(results.filename, 'w') as my_file:
+                my_file.write(output_string)
         else:
-            try:
-                results.o.write(output_string)
-                results.o.close()
-            except IOError, msg:
-                parser.error(str(msg))
-
-
-def print_help():
-    print('usage: python forge_api_script.py file [arg] [--debug]')
-    print('Options and arguments (and corresponding environment variables):')
-    print('file   : output filename')
-    print('pairs=specified_symbols : currency pair to be returned by API, e.g. EURUSD,GBPJPY,AUDUSD')
-    print('arg ...: arguments passed to program in sys.argv[1:]')
-    print('--debug : turns debug mode of the script')
+            print(output_string)
 
 
 def main():
@@ -291,8 +268,8 @@ if __name__ == '__main__':
     quotes = forge.get_quotes(specified_symbols)
     print(quotes)
 
-    output_string = quotes
-    forge.create_file(output_string=output_string)
+    # output_string = quotes
+    # forge.create_file(output_string=output_string)
 
     quota = forge.quota()
     print(quota)
