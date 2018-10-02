@@ -5,6 +5,8 @@ import python_forex_quotes
 from config import Config
 import codecs, json, io
 import functools
+import logging
+import time
 import sys
 
 """"Python API script: forge
@@ -87,15 +89,64 @@ Market is open!
 Process finished with exit code 0
 """
 
-def json_output(decorated):
+
+def logged(method):
+    """Cause the decorated method to be run and its results logged, along
+    with some other diagnostic information.
+    """
+    @functools.wraps(method)
+    def inner(*args, **kwargs):
+        # Record our start time.
+        start = time.time()
+
+        # Run the decorated method.
+        return_value = method(*args, **kwargs)
+
+        # Record our completion time, and calculate the delta.
+        end = time.time()
+        delta = end - start
+
+        # Log the method call and the result.
+        logger = logging.getLogger('decorator.logged')
+        logger.warn('Called method %s at %.02f; execution time %.02f '
+                    'seconds; result %r.' %
+                    (method.__name__, start, delta, return_value))
+
+        # Return the method's original return value.
+        return return_value
+    return inner
+
+
+class JSONOutputError(Exception):
+    def __init__(self, message):
+        self._message = message
+
+    def __str__(self):
+        return self._message
+
+
+def json_output(decorated_=None, indent=None, sort_keys=False):
     """Run the decorated function, serialize the result of that function
     to JSON, and return the JSON string.
     """
-    @functools.wraps(decorated)
-    def inner(*args, **kwargs):
-        result = decorated(*args, **kwargs)
-        return json.dumps(result)
-    return inner
+    # Did we get both a decorated method and keyword arguments?
+    # That should not happen.
+    if decorated_ and (indent or sort_keys):
+        raise RuntimeError('Unexpected arguments.')
+
+    # Define the actual decorator function.
+    def actual_decorator(func):
+        @functools.wraps(func)
+        def inner(*args, **kwargs):
+            try:
+                result = func(*args, **kwargs)
+            except JSONOutputError as ex:
+                result = {
+                   'status': 'error',
+                    'message': str(ex),
+                }
+            return json.dumps(result, indent=indent, sort_keys=sort_keys)
+        return inner
 
 
 class Forge:
@@ -116,6 +167,7 @@ class Forge:
             return False
 
     @json_output
+    @logged
     def get_symbols(self):
         """Get the list of available symbols
         """
@@ -123,6 +175,7 @@ class Forge:
         return symbols
 
     @json_output
+    @logged
     def get_quotes(self, specified_symbols):
         """Get quotes for specified symbols
         """
@@ -130,6 +183,7 @@ class Forge:
         return quotes
 
     @json_output
+    @logged
     def quota(self):
         """Check your usage / quota limit
         """
@@ -137,6 +191,7 @@ class Forge:
         return quota
 
     @json_output
+    @logged
     def convert(self, from_currency, to_currency, from_currency_value):
         """"Convert from one currency to another
         """
@@ -147,19 +202,11 @@ class Forge:
         """Create an output file
         """
 
-        # json.loads(r.data.decode('utf-8'))
-        print(json.loads(str(output_string).decode("utf-8")))
-
         # f = codecs.open(path + filename, 'w', 'utf8')
-
         # f.write(output_string)
         # f.close()
-
-
-        # json_string = json.dumps(output_string, ensure_ascii=False).encode('utf8')
-
-        # with io.open(path + filename, 'w', encoding='utf8') as json_file:
-        #    json.dump(u"ברי צקלה", json_file, ensure_ascii=False)
+        with open(path + filename, 'w', 'utf8') as my_file:
+             my_file.write(output_string)
 
 
 if __name__ == '__main__':
