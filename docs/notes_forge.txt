@@ -38,6 +38,17 @@ Running above command would result in sending request to the following
 endpoint https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD with pairs=EURUSD as query argument
 and saving output data to output.csv file.
 
+=================================================================
+
+python script_name.py arg1 arg2 kwarg1=value1
+python forge_api_script.py output.csv pairs=EURUSD --debug
+
+usage: python forge_api_script.py file [arg] [--debug]
+Options and arguments (and corresponding environment variables):
+file   : output filename
+pairs=specified_symbols : currency pair to be returned by API, e.g. EURUSD,GBPJPY,AUDUSD
+arg ...: arguments passed to program in sys.argv[1:]
+--debug : turns debug mode of the script
 
 ==================================================================
 

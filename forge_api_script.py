@@ -3,10 +3,11 @@
 from __future__ import print_function
 import python_forex_quotes
 from config import Config
-import codecs, json, io
+import json
 import functools
 import logging
 import time
+import argparse
 import sys
 
 """"Python API script: forge
@@ -72,7 +73,7 @@ Delivery formats: JSON
 Redundancy: Basic
 Encryption: 256-bit
 
-$python forge.py
+$python forge_api_script.py
 api_key: YOUR_API_KEY
 
 Market is open!
@@ -92,6 +93,17 @@ u'ETHUSD', u'LTCBTC', u'LTCUSD', u'XRPUSD', u'XRPBTC', u'DSHUSD', u'DSHBTC', u'B
 Process finished with exit code 0
 """
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-o', metavar='out-file', type=argparse.FileType('wt'))
+
+try:
+    results = parser.parse_args()
+    print(parser.parse_args())
+    print('Output file:', results.o)
+except IOError, msg:
+    parser.error(str(msg))
+
 
 def logged(method):
     """Cause the decorated method to be run and its results logged, along
@@ -110,10 +122,17 @@ def logged(method):
         delta = end - start
 
         # Log the method call and the result.
-        logger = logging.getLogger('decorator.logged')
-        logger.warn('Called method %s at %.02f; execution time %.02f '
-                    'seconds; result %r.' %
-                    (method.__name__, start, delta, return_value))
+
+        # logging.basicConfig(level=logging.INFO,
+        #                        format='%(asctime)s %(levelname)8s %(message)s',
+        #                        filename='forge.log', filemode='w')
+        logging.basicConfig(level=logging.DEBUG, filename='forge.log', filemode='w')
+
+        # logger = logging.getLogger().setLevel(logging.DEBUG)
+        logger = logging.getLogger()
+        logger.debug('Called method %s at %.02f; execution time %.02f '
+                         'seconds; result %r.' %
+                         (method.__name__, start, delta, return_value))
 
         # Return the method's original return value.
         return return_value
@@ -208,18 +227,41 @@ class Forge:
         conversion = self.client.convert(from_currency, to_currency, from_currency_value)
         return conversion
 
-    def create_file(self, path='', filename="output.csv", output_string=''):
+    # @logged
+    # def create_file(self, path='', filename="output.csv", output_string=''):
+    #     """Create an output file
+    #     """
+    #     with open(path + filename, 'w') as my_file:
+    #         my_file.write(output_string)
+
+    @logged
+    def create_file(self, output_string=''):
         """Create an output file
         """
+        if not results.o:
+            print(output_string)
+        else:
+            try:
+                results.o.write(output_string)
+                results.o.close()
+            except IOError, msg:
+                parser.error(str(msg))
 
-        # f = codecs.open(path + filename, 'w', 'utf8')
-        # f.write(output_string)
-        # f.close()
-        with open(path + filename, 'w') as my_file:
-            my_file.write(output_string)
+
+def print_help():
+    print('usage: python forge_api_script.py file [arg] [--debug]')
+    print('Options and arguments (and corresponding environment variables):')
+    print('file   : output filename')
+    print('pairs=specified_symbols : currency pair to be returned by API, e.g. EURUSD,GBPJPY,AUDUSD')
+    print('arg ...: arguments passed to program in sys.argv[1:]')
+    print('--debug : turns debug mode of the script')
+
+def main():
+    sys.exit()
 
 
 if __name__ == '__main__':
+    # main()
     forge = Forge()
     # forge = Forge('YOUR_API_KEY')
     # print("api_key: {}".format(forge.api_key))
