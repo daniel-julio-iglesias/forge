@@ -182,7 +182,7 @@ def json_output(decorated_=None, indent=None, sort_keys=False):
 
 class Forge():
     def __init__(self, api_key=None):
-        """ou can get an API key for free at 1forge.com
+        """You can get an API key for free at 1forge.com
         """
         if not api_key:
             self.api_key = Config().FORGE_API_KEY or 'YOUR_API_KEY'
