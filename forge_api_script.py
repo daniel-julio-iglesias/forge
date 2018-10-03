@@ -10,7 +10,9 @@ import time
 import argparse
 import sys
 
-""""Python API script: forge
+""""Python API script: forge_api_script.py
+
+Some initial notes :
 
 https://github.com/toddmotto/public-apis/blob/master/README.md#currency-exchange
 
@@ -92,24 +94,67 @@ u'ETHUSD', u'LTCBTC', u'LTCUSD', u'XRPUSD', u'XRPBTC', u'DSHUSD', u'DSHBTC', u'B
 
 Process finished with exit code 0
 
+The desired command 
 python forge_api_script.py output.csv pair=EURUSD --debug
+is implemented as 
+python forge_api_script.py -f output.csv -p EURUSD -d
+obtaining the result
+[{"ask": 1.15273, "timestamp": 1538582607, "symbol": "EURUSD", "price": 1.15272, "bid": 1.15272}]
+
 python forge_api_script.py -h
-pforge_api_script.py [-h] [-v] [--filename FILENAME] [--pair PAIRS]
-                           [--debug]
-python forge_api_script.py --filename output.csv --pair EURUSD --pair GBPJPY --pair AUDUSD --debug
+
+usage: forge_api_script.py [-h] [-v] [--filename FILENAME] [--pair PAIRS]
+                           [--debug] [--market-is-open] [--get-symbols]
+                           [--quota] [--convert CONVERT CONVERT CONVERT]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  --filename FILENAME, -f FILENAME
+                        Output filename
+  --pair PAIRS, -p PAIRS
+                        Add repeated values to a list. Currency pair to be
+                        returned by API, e.g. EURUSD
+  --debug, -d           Turns debug mode of the script
+  --market-is-open, -m  Check if the market is open
+  --get-symbols, -s     Get the list of available symbols
+  --quota, -q           Check your usage / quota limit
+  --convert CONVERT CONVERT CONVERT, -c CONVERT CONVERT CONVERT
+                        Convert from one currency to another (from_currency,
+                        to_currency, from_currency_value)
+
+Usage Samples:                        
+python forge_api_script.py -f output.csv -p EURUSD -d
+python forge_api_script.py -f output.csv -s -d
+python forge_api_script.py -f output.csv -p EURUSD -p GBPJPY -d
+python forge_api_script.py -f output.csv -c EUR USD 100 -d                        
+python forge_api_script.py -f output.csv -m -d
+python forge_api_script.py -f output.csv -q -d
+python forge_api_script.py -f output.csv -c EUR USD 100 -q -d
+
+DISCLAIMER: Do Not Use In Production before being thoroughly tested.
 """
 
 parser = argparse.ArgumentParser(version='1.0')
-
-parser.add_argument('--filename',
+parser.add_argument('--filename', '-f',
                     help='Output filename')
-parser.add_argument('--pair', action="append", dest="pairs",
+parser.add_argument('--pair', '-p', action="append", dest="pairs",
                     help='Add repeated values to a list. Currency pair to be returned by API, e.g. EURUSD')
-parser.add_argument('--debug', action='store_true', default=False, dest='debug_switch',
+parser.add_argument('--debug', '-d', action='store_true', default=False, dest='debug_switch',
                     help='Turns debug mode of the script')
-
+parser.add_argument('--market-is-open', '-m', action='store_true', default=False, dest='market_switch',
+                    help='Check if the market is open')
+parser.add_argument('--get-symbols', '-s', action='store_true', default=False, dest='symbols_switch',
+                    help='Get the list of available symbols')
+parser.add_argument('--quota', '-q', action='store_true', default=False, dest='quota_switch',
+                    help='Check your usage / quota limit')
+parser.add_argument('--convert', '-c', nargs=3,
+                    help='Convert from one currency to another (from_currency, to_currency, from_currency_value)')
+# TODO: Add the next arguments for next version v1.1 for authentication management behind proxy
+# parser.add_argument('--user', action="store")
+# parser.add_argument('--password', action="store")
 results = parser.parse_args()
-print(results)
+# print(results)
 
 
 def logged(method):
@@ -241,31 +286,33 @@ class Forge():
 
     @logged
     def write_to_file(self, output_string=None):
-        """Create an output file
+        """Write down to an output file
         """
         if results.filename:
-            with open(results.filename, 'w') as my_file:
-                my_file.write(output_string)
+            with open(results.filename, 'a') as my_file:
+                my_file.write(output_string + '\n')
         else:
             print(output_string)
 
 
 def main():
     forge = Forge()
-    # forge = Forge().instantiate_the_client()
-    # forge = Forge('YOUR_API_KEY')
-    # print("api_key: {}".format(forge.api_key))
-    # sys.exit()
-    # print("forge {}".format(forge))
-    # print(forge)
     # sys.exit()
 
-    if forge.market_is_open():
-        print("Market is open!")
-    else:
-        print("Market is closed!")
+    if results.market_switch:
+        if forge.market_is_open():
+            # print("Market is open!")
+            output_string = "Market is open!"
+        else:
+            # print("Market is closed!")
+            output_string = "Market is closed!"
+        forge.write_to_file(output_string)
 
-    print(forge.get_symbols())
+    if results.symbols_switch:
+        symbols = forge.get_symbols()
+        # print(symbols)
+        output_string = symbols
+        forge.write_to_file(output_string)
 
     if results.pairs:
         # specified_symbols = ['EURUSD', 'GBPJPY']
@@ -273,16 +320,25 @@ def main():
         quotes = forge.get_quotes(specified_symbols)
         # print(quotes)
         output_string = quotes
-        forge.write_to_file(output_string=output_string)
+        forge.write_to_file(output_string)
 
-    quota = forge.quota()
-    print(quota)
+    if results.quota_switch:
+        quota = forge.quota()
+        # print(quota)
+        output_string = quota
+        forge.write_to_file(output_string)
 
-    from_currency = 'EUR'
-    to_currency = 'USD'
-    from_currency_value = 100
-    conversion = forge.convert(from_currency, to_currency, from_currency_value)
-    print(conversion)
+    if results.convert:
+        from_currency = results.convert[0]
+        to_currency = results.convert[1]
+        from_currency_value = float(results.convert[2])
+        # from_currency = 'EUR'
+        # to_currency = 'USD'
+        # from_currency_value = 100
+        conversion = forge.convert(from_currency, to_currency, from_currency_value)
+        # print(conversion)
+        output_string = conversion
+        forge.write_to_file(output_string)
 
 
 if __name__ == '__main__':
