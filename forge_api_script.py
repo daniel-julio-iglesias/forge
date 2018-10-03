@@ -21,7 +21,7 @@ Auth: apiKey
 HTTPS: Yes
 CORS: Unknown
 
-YOUR_API_KEY=SECRET_KEY  {environment variable}
+YOUR_API_KEY=FORGE_API_KEY  {environment variable}
 
 Script would be called like:
 
@@ -180,21 +180,22 @@ def json_output(decorated_=None, indent=None, sort_keys=False):
         return actual_decorator
 
 
-class Forge:
+class Forge():
     def __init__(self, api_key=None):
         """ou can get an API key for free at 1forge.com
         """
         if not api_key:
-            self.api_key = Config().SECRET_KEY or 'YOUR_API_KEY'
+            self.api_key = Config().FORGE_API_KEY or 'YOUR_API_KEY'
         else:
             self.api_key = api_key
-        self.client = None
+        self.client = python_forex_quotes.ForexDataClient(self.api_key)
+        # self.client = None
 
     def instantiate_the_client(self):
         """Instantiate the client
         """
         self.client = python_forex_quotes.ForexDataClient(self.api_key)
-        return self.client
+        # return self.client
 
     @json_output
     @logged
@@ -250,16 +251,14 @@ class Forge:
 
 
 def main():
-    forge = Forge().instantiate_the_client()
+    forge = Forge()
+    # forge = Forge().instantiate_the_client()
     # forge = Forge('YOUR_API_KEY')
     # print("api_key: {}".format(forge.api_key))
     # sys.exit()
-    print("forge {}".format(forge))
-    print(forge)
-    sys.exit()
-
-    if not forge:
-        sys.exit("No instance")
+    # print("forge {}".format(forge))
+    # print(forge)
+    # sys.exit()
 
     if forge.market_is_open():
         print("Market is open!")

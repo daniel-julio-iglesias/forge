@@ -6,9 +6,9 @@ import os
 
 class Config:
     def __init__(self):
-        self.SECRET_KEY = os.environ.get('SECRET_KEY') or 'YOUR_API_KEY'
+        self.FORGE_API_KEY = os.environ.get('FORGE_API_KEY') or 'YOUR_API_KEY'
 
 
 if __name__ == '__main__':
     config = Config()
-    print("SECRET_KEY: {}".format(config.SECRET_KEY))
+    print("FORGE_API_KEY: {}".format(config.FORGE_API_KEY))
