@@ -84,8 +84,10 @@ optional arguments:
 python forge_api_script.py -f output.csv -p EURUSD -d
 
 # Other Usage Samples
-# Gest quoata and conversion
+# Get quota and conversion
 python forge_api_script.py -f output.csv -c EUR USD 100 -q -d
+# Get quota
+python forge_api_script.py -q
 ```
 
 ### Get the list of available symbols:

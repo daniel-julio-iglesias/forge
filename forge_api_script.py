@@ -130,7 +130,14 @@ python forge_api_script.py -f output.csv -p EURUSD -p GBPJPY -d
 python forge_api_script.py -f output.csv -c EUR USD 100 -d                        
 python forge_api_script.py -f output.csv -m -d
 python forge_api_script.py -f output.csv -q -d
+python forge_api_script.py -q
 python forge_api_script.py -f output.csv -c EUR USD 100 -q -d
+
+Error checks:
+- incorrect arguments provided
+TODO: - invalid output file format
+- error response from server
+- incorrect response
 
 DISCLAIMER: Do Not Use In Production before being thoroughly tested.
 """
@@ -234,13 +241,6 @@ class Forge():
         else:
             self.api_key = api_key
         self.client = python_forex_quotes.ForexDataClient(self.api_key)
-        # self.client = None
-
-    def instantiate_the_client(self):
-        """Instantiate the client
-        """
-        self.client = python_forex_quotes.ForexDataClient(self.api_key)
-        # return self.client
 
     @json_output
     @logged
