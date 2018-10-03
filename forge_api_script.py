@@ -124,19 +124,13 @@ def logged(method):
         # Run the decorated method.
         return_value = method(*args, **kwargs)
 
-        # Record our completion time, and calculate the delta.
-        end = time.time()
-        delta = end - start
-
-        # Log the method call and the result.
-
-        # logging.basicConfig(level=logging.INFO,
-        #                        format='%(asctime)s %(levelname)8s %(message)s',
-        #                        filename='forge.log', filemode='w')
-
         if results.debug_switch:
+            # Record our completion time, and calculate the delta.
+            end = time.time()
+            delta = end - start
+
+            # Log the method call and the result.
             logging.basicConfig(level=logging.DEBUG, filename='forge.log', filemode='w')
-            # logger = logging.getLogger().setLevel(logging.DEBUG)
             logger = logging.getLogger()
             logger.debug('Called method %s at %.02f; execution time %.02f '
                          'seconds; result %r.' %
@@ -188,16 +182,25 @@ def json_output(decorated_=None, indent=None, sort_keys=False):
 
 class Forge:
     def __init__(self, api_key=None):
-        # You can get an API key for free at 1forge.com
+        """ou can get an API key for free at 1forge.com
+        """
         if not api_key:
             self.api_key = Config().SECRET_KEY or 'YOUR_API_KEY'
         else:
             self.api_key = api_key
-        # Instantiate the client
-        self.client = python_forex_quotes.ForexDataClient(self.api_key)
+        self.client = None
 
-    # Check if the market is open
+    def instantiate_the_client(self):
+        """Instantiate the client
+        """
+        self.client = python_forex_quotes.ForexDataClient(self.api_key)
+        return self.client
+
+    @json_output
+    @logged
     def market_is_open(self):
+        """Check if the market is open
+        """
         if self.client.marketIsOpen():
             return True
         else:
@@ -236,7 +239,7 @@ class Forge:
         return conversion
 
     @logged
-    def create_file(self, output_string=None):
+    def write_to_file(self, output_string=None):
         """Create an output file
         """
         if results.filename:
@@ -247,10 +250,16 @@ class Forge:
 
 
 def main():
-    forge = Forge()
+    forge = Forge().instantiate_the_client()
     # forge = Forge('YOUR_API_KEY')
     # print("api_key: {}".format(forge.api_key))
     # sys.exit()
+    print("forge {}".format(forge))
+    print(forge)
+    sys.exit()
+
+    if not forge:
+        sys.exit("No instance")
 
     if forge.market_is_open():
         print("Market is open!")
@@ -265,7 +274,7 @@ def main():
         quotes = forge.get_quotes(specified_symbols)
         # print(quotes)
         output_string = quotes
-        forge.create_file(output_string=output_string)
+        forge.write_to_file(output_string=output_string)
 
     quota = forge.quota()
     print(quota)
