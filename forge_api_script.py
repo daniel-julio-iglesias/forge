@@ -14,6 +14,8 @@ import sys
 
 Some initial notes :
 
+Reused class ForexDataClient from python_forex_quotes
+
 https://github.com/toddmotto/public-apis/blob/master/README.md#currency-exchange
 
 API: 1Forge
@@ -134,7 +136,7 @@ python forge_api_script.py -q
 python forge_api_script.py -f output.csv -c EUR USD 100 -q -d
 
 Error checks:
-- incorrect arguments provided
+TODO: - incorrect arguments provided
 TODO: - invalid output file format
 - error response from server
 - incorrect response
