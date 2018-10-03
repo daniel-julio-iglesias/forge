@@ -33,8 +33,17 @@ python_forex_quotes is a Python Library for fetching realtime forex quotes
 
 ## Installation
 ```
-pip install python_forex_quotes
+$ git clone https://github.com/daniel-julio-iglesias/forge.git
+or
+$ mkdir forge
+and copy provided files into forge folder
 
+$ cd forge
+
+Install the virtual environment
+and activate it
+
+(venv) $ pip install python_forex_quotes
 
 Edit the config.py file:
 
